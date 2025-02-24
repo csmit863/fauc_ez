@@ -1,0 +1,12 @@
+services:
+ faucez:
+  network_mode: "host"
+  build:
+   dockerfile: Dockerfile
+  environment:
+   - qutbtc_app_pw=${QUTBTC_APP_PW}
+   - sender_email=${SENDER_EMAIL}
+   - faucet_key=${FAUCET_KEY}
+   - web3_provider=${WEB3_PROVIDER}
+  ports:
+   - "5000:5000"
