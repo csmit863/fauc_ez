@@ -9,6 +9,7 @@
     <h1>Sepolia Testnet Faucet</h1>
     <p>Enter your wallet address and student email to receive Sepolia ETH</p>
     
+    <!-- Step 1: Request OTP -->
     <form id="faucetForm">
         <label for="wallet">Wallet Address:</label>
         <input type="text" id="wallet" name="wallet" required>
@@ -16,26 +17,71 @@
         <label for="email">Student Email:</label>        
         <input type="email" id="email" name="email" required>
 
-        <button type="submit">Request Tokens</button>
+        <button type="submit">Request OTP</button>
     </form>
 
     <p id="responseMessage"></p>
 
-    <script>
-        document.getElementById('faucetForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+    <!-- Step 2: Verify OTP -->
+    <form id="otpForm" style="display: none;">
+        <label for="otp">Enter 6-digit OTP:</label>
+        <input type="text" id="otp" name="otp" required minlength="6" maxlength="6" pattern="[0-9]{6}">
 
-            const wallet = document.getElementById('wallet').value;
-            const email = document.getElementById('email').value;
-            const response = await fetch(`http://localhost:5000/api/get-otp?email=${email}&address=${wallet}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            if (response.ok){
+        <button type="submit">Verify and Claim ETH</button>
+    </form>
+
+    <p id="otpResponseMessage"></p>
+
+    <script>
+        const faucetForm = document.getElementById('faucetForm');
+        const otpForm = document.getElementById('otpForm');
+
+        let email, wallet;
+
+        // Step 1: Request OTP
+        faucetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            wallet = document.getElementById('wallet').value;
+            email = document.getElementById('email').value;
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/get-otp?email=${email}&address=${wallet}`, {
+                    method: 'POST'
+                });
+
                 const result = await response.json();
-                document.getElementById('responseMessage').textContent = result.message || "Verification email sent!";
-            } else {
+                if (response.ok) {
+                    document.getElementById('responseMessage').textContent = result.message || "OTP sent to your email!";
+                    faucetForm.style.display = 'none'; // Hide first form
+                    otpForm.style.display = 'block';   // Show OTP form
+                } else {
+                    document.getElementById('responseMessage').textContent = result.detail || "Failed to request OTP.";
+                }
+            } catch (error) {
                 document.getElementById('responseMessage').textContent = "Failed to connect to the server.";
+            }
+        });
+
+        // Step 2: Verify OTP
+        otpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const otp = document.getElementById('otp').value;
+            console.log(`http://localhost:5000/api/get-eth?email=${email}&address=${wallet}&otp=${parseInt(otp)}`)
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/get-eth?email=${email}&address=${wallet}&otp=${parseInt(otp)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    document.getElementById('otpResponseMessage').textContent = `Success! TX Hash: ${result.tx_hash}`;
+                } else {
+                    document.getElementById('otpResponseMessage').textContent = result.detail || "Failed to verify OTP.";
+                }
+            } catch (error) {
+                document.getElementById('otpResponseMessage').textContent = "Failed to connect to the server.";
             }
         });
     </script>

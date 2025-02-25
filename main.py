@@ -73,7 +73,9 @@ async def getotp(email: str, address: str):
 
 
 @app.post("/api/get-eth")
-async def get_eth(email: str, address: str, otp: int):
+async def get_eth(email: str, address: str, otp: str):
+    otp = int(otp)
+    print(email, address, otp)
     if ((email, address, otp)) in current_codes:
         checkClaimed(email, address)
         current_codes.remove((email, address, otp))
