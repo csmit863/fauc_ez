@@ -45,7 +45,7 @@
             email = document.getElementById('email').value;
 
             try {
-                const response = await fetch(`http://localhost:5000/api/get-otp?email=${email}&address=${wallet}`, {
+                const response = await fetch(`https://api.qutblockchain.club/api/get-otp?email=${email}&address=${wallet}`, {
                     method: 'POST'
                 });
 
@@ -66,10 +66,10 @@
         otpForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const otp = document.getElementById('otp').value;
-            console.log(`http://localhost:5000/api/get-eth?email=${email}&address=${wallet}&otp=${parseInt(otp)}`)
+            console.log(`https://api.qutblockchain.club/api/get-eth?email=${email}&address=${wallet}&otp=${parseInt(otp)}`)
 
             try {
-                const response = await fetch(`http://localhost:5000/api/get-eth?email=${email}&address=${wallet}&otp=${parseInt(otp)}`, {
+                const response = await fetch(`https://api.qutblockchain.club/api/get-eth?email=${email}&address=${wallet}&otp=${parseInt(otp)}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });
