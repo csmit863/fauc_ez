@@ -76,7 +76,7 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    document.getElementById('otpResponseMessage').textContent = `Success! TX Hash: ${result.tx_hash}`;
+                    document.getElementById('otpResponseMessage').textContent = `Success! TX Hash: 0x${result.tx_hash}`;
                 } else {
                     document.getElementById('otpResponseMessage').textContent = result.detail || "Failed to verify OTP.";
                 }
