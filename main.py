@@ -39,9 +39,9 @@ def checkClaimed(email, address):
     current_time = time.time()
     for entry in list(used_combinations):
         if entry[0] == email or entry[1] == address:
-            if current_time - entry[2] < 12 * 60 * 60:  # 12 hours in seconds
-                print('Wait 12 hours')
-                raise HTTPException(status_code=400, detail="This email and address combination has already received funding within the last 12 hours")
+            if current_time - entry[2] < 1 * 60 * 60:  # 1 hours in seconds
+                print('Wait 1 hours')
+                raise HTTPException(status_code=400, detail="This email and address combination has already received funding within the last 1 hours")
             else:
                 # Remove the old entry since it's expired
                 used_combinations.remove(entry)
