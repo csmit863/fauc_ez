@@ -5,13 +5,14 @@ import os, dotenv
 
 
 dotenv.load_dotenv()
-web3_instance = Web3(HTTPProvider(os.environ.get('web3_provider')))
-private_key = os.environ.get('faucet_key')
+private_key = os.environ.get('faucet_key') # pk on sepolia and testnet should be the same. therefore cant use the default keys.
 faucet_account = Account.from_key(private_key)
 eth_distribution_amount = int(0.452*10**18)
 
 
-async def send_eth(address):
+async def send_eth(address, rpc):
+
+    web3_instance = Web3(HTTPProvider(rpc)) # either sepolia or qut testnet
     # check there is enough to send before attempting, if not, return an error message
     nonce = web3_instance.eth.get_transaction_count(faucet_account.address)    
     try:

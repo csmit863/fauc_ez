@@ -73,16 +73,20 @@ async def getotp(email: str, address: str):
 
 
 @app.post("/api/get-eth")
-async def get_eth(email: str, address: str, otp: str):
+async def get_eth(email: str, address: str, otp: str, network: str):
     otp = int(otp)
     print(email, address, otp)
+    if network == "qut":
+        rpc = "https://testnet.qutblockchain.club"
+    elif network == "sepolia":
+        rpc = "https://sepolia.drpc.org"
     if ((email, address, otp)) in current_codes:
         checkClaimed(email, address)
         current_codes.remove((email, address, otp))
         used_combinations.add((email, address, time.time()))
 
         # Send ETH transaction
-        status, tx_hash = await send_eth(address)
+        status, tx_hash = await send_eth(address, rpc)
         return {"status": status, "tx_hash": tx_hash}
     
     raise HTTPException(status_code=400, detail='Invalid OTP or combination')
