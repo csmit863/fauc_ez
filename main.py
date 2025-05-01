@@ -80,6 +80,8 @@ async def get_eth(email: str, address: str, otp: str, network: str):
         rpc = "https://testnet.qutblockchain.club"
     elif network == "sepolia":
         rpc = "https://sepolia.drpc.org"
+    else:
+        return {"status": "no RPC provided", "tx_hash": "0x"}
     if ((email, address, otp)) in current_codes:
         checkClaimed(email, address)
         current_codes.remove((email, address, otp))
