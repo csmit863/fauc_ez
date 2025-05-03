@@ -4,8 +4,8 @@ from email.mime.text import MIMEText
 dotenv.load_dotenv()
 
 def send_email(to_email, message, subject):
-    sender_email = os.environ.get('sender_email')
-    password = os.environ.get('qutbtc_app_pw')
+    sender_email = os.environ.get('SENDER_EMAIL')
+    password = os.environ.get('QUTBTC_APP_PW')
     smtp_server = "smtp.gmail.com"
     port = 465  
     # Create a secure SSL context

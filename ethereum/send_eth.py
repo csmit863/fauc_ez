@@ -5,7 +5,7 @@ import os, dotenv
 
 
 dotenv.load_dotenv()
-private_key = os.environ.get('faucet_key') # pk on sepolia and testnet should be the same. therefore cant use the default keys.
+private_key = os.environ.get('FAUCET_KEY') # pk on sepolia and testnet should be the same. therefore cant use the default keys.
 faucet_account = Account.from_key(private_key)
 eth_distribution_amount = int(0.452*10**18)
 
@@ -22,10 +22,10 @@ def get_bumped_gas_price(web3_instance, address, nonce):
         print("Couldn't fetch txpool content:", e)
 
     # Fallback to a default if no tx found
-    return web3_instance.to_wei(60, 'gwei')
+    return web3_instance.to_wei(200, 'gwei')
 
 
-async def send_eth(address, rpc):
+def send_eth(address, rpc):
     print(rpc)
     web3_instance = Web3(HTTPProvider(rpc)) # either sepolia or qut testnet
     # check there is enough to send before attempting, if not, return an error message
@@ -44,8 +44,8 @@ async def send_eth(address, rpc):
         }
         signed_tx = web3_instance.eth.account.sign_transaction(tx, private_key)
         tx_hash = web3_instance.eth.send_raw_transaction(signed_tx.raw_transaction)
-        status = 'success'
-        return status, tx_hash.hex()
+        print(f"TX hash: {tx_hash.hex()}")
+        return 'success', tx_hash.hex()
     except (TransactionNotFound, BadFunctionCallOutput) as e:
         print(f'Transaction error: {e}')
         status = 'error'
